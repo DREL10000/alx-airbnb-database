@@ -60,6 +60,20 @@
 - message_body
 - sent_at
 
+## Relationship Between Entities
+
+- One Booking can only be made by one user
+- One booking has one payment
+- One payment can be made only to one booking
+- One property can have many bookings
+- One booking belongs to only one property
+- One property has many reviews
+- One review belongs to one property
+- One User can send many messages
+- One User can receive many messages
+- One Message has one sender (User)
+- One Message has one recipient (User)
+
 ## ER Diagram
 
 ![ERD diagram](airbnb-clone-db-design.png)
