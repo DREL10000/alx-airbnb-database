@@ -50,6 +50,8 @@ INNER JOIN User u ON b.user_id = u.user_id
 INNER JOIN Property p ON b.property_id = p.property_id
 INNER JOIN User h ON p.host_id = h.user_id
 LEFT JOIN Payment pay ON b.booking_id = pay.booking_id
+WHERE b.status = 'confirmed'
+  AND b.start_date >= CURRENT_DATE
 ORDER BY b.created_at DESC;
 
 
