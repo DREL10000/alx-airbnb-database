@@ -3,12 +3,59 @@
 -- Purpose: Optimize query performance for high-usage columns
 -- ============================================================================
 
-EXPLAIN SELECT * FROM Property WHERE location = 'Miami' AND pricepernight < 200;
-EXPLAIN SELECT * FROM Booking WHERE property_id = 'xxx' AND start_date >= '2025-11-01' AND end_date <= '2025-11-30';
-EXPLAIN SELECT * FROM Review WHERE property_id = 'xxx' ORDER BY created_at DESC;
-EXPLAIN SELECT * FROM User WHERE role = 'host' AND created_at > '2025-01-01';
-EXPLAIN SELECT * FROM Payment WHERE payment_date BETWEEN '2025-10-01' AND '2025-10-31';
+-- Property search by location and price
+EXPLAIN ANALYZE 
+SELECT * FROM Property 
+WHERE location = 'Miami' AND pricepernight < 200;
 
+-- Booking availability check
+EXPLAIN ANALYZE 
+SELECT * FROM Booking 
+WHERE property_id = 'your-property-uuid-here' 
+  AND start_date >= '2025-11-01' 
+  AND end_date <= '2025-11-30';
+
+-- Property reviews sorted by date
+EXPLAIN ANALYZE 
+SELECT * FROM Review 
+WHERE property_id = 'your-property-uuid-here' 
+ORDER BY created_at DESC 
+LIMIT 10;
+
+-- Filter users by role and registration date
+EXPLAIN ANALYZE 
+SELECT * FROM User 
+WHERE role = 'host' AND created_at > '2025-01-01';
+
+-- Payment reports by date range
+EXPLAIN ANALYZE 
+SELECT * FROM Payment 
+WHERE payment_date BETWEEN '2025-10-01' AND '2025-10-31';
+
+-- User booking history with status
+EXPLAIN ANALYZE 
+SELECT b.*, p.name, p.location 
+FROM Booking b 
+JOIN Property p ON b.property_id = p.property_id 
+WHERE b.user_id = 'your-user-uuid-here' 
+  AND b.status = 'confirmed'
+ORDER BY b.start_date DESC;
+
+-- Property with average rating
+EXPLAIN ANALYZE 
+SELECT p.*, AVG(r.rating) as avg_rating, COUNT(r.review_id) as review_count
+FROM Property p
+LEFT JOIN Review r ON p.property_id = r.property_id
+WHERE p.location = 'Miami'
+GROUP BY p.property_id
+HAVING avg_rating >= 4.0;
+
+-- User messages (inbox query)
+EXPLAIN ANALYZE 
+SELECT * FROM Message 
+WHERE recipient_id = 'your-user-uuid-here' 
+ORDER BY sent_at DESC 
+LIMIT 20;
 -- ----------------------------------------------------------------------------
 -- USER TABLE INDEXES
 -- ----------------------------------------------------------------------------
